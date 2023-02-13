@@ -2,8 +2,11 @@ const express = require("express");
 const mysql = require("mysql");
 const router = express.Router();
 const bcrypt = require("bcrypt");
+const bodyParser = require("body-parser");
 
-const { create, login } = require("../controller/auth");
+const encoded = bodyParser.urlencoded();
+
+const { create, login, renderLogin } = require("../controller/auth");
 const {
 	fetchDispatchList,
 	fetchProductList,
@@ -28,27 +31,12 @@ router.get("/warehouse/dispatchlist", fetchDispatchList);
 router.post("/createuser", create);
 
 // route -> login user
-router.post("/login", login);
 // router.get("/login", renderLogin);
+router.post("/login", login);
 
 // route -> adding a new product
 
-router.post("/warehouse/addNew", (req, res) => {
-	const { product_name, date, quantity, quantity_format, supplier, remark } =
-		req.body;
-
-	db.query(
-		"INSERT INTO productlist (date, product_name, quantity, quantity_format, supplier, remark) VALUES (?, ?, ?, ?,?,?)",
-		[date, product_name, quantity, quantity_format, supplier, remark],
-		(error, result) => {
-			if (error) {
-				console.log(error);
-			} else {
-				res.json({ message: "Product added successfully" });
-			}
-		}
-	);
-});
+router.post("/warehouse/addNew", addData);
 
 //route -> updateing data(adding data)
 

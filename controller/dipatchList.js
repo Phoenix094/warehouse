@@ -28,21 +28,54 @@ exports.dispatchListAdd = (req, res) => {
 						} else {
 							let totalQuantity = result[0].quantity;
 							let newQuantity = totalQuantity - quantity;
-
-							db.query(
-								"UPDATE productlist SET quantity=? WHERE id=?",
-								[newQuantity, upid],
-								(er, result) => {
-									if (er) {
-										console.log(er);
-									} else {
-										res.json({ message: "Product dispatch added" });
+							if (newQuantity == 0) {
+								db.query(
+									"DELETE FROM dispatch_list WHERE id=? ",
+									[upid],
+									(er, result) => {
+										if (er) {
+											res.json({ error: "some error occurd" });
+										} else {
+											res.json({
+												message:
+													"the Product is dispatch and the product is empty",
+											});
+										}
 									}
-								}
-							);
+								);
+							} else {
+								db.query(
+									"UPDATE productlist SET quantity=? WHERE id=?",
+									[newQuantity, upid],
+									(er, result) => {
+										if (er) {
+											console.log(er);
+										} else {
+											res.json({ message: "Product dispatch added" });
+										}
+									}
+								);
+							}
 						}
 					}
 				);
+			}
+		}
+	);
+};
+
+exports.addData = (req, res) => {
+	const { product_name, date, quantity, quantity_format, supplier, remark } =
+		req.body;
+
+	db.query(
+		"INSERT INTO productlist (date, product_name, quantity, quantity_format, supplier, remark) VALUES (?, ?, ?, ?,?,?)",
+		[date, product_name, quantity, quantity_format, supplier, remark],
+		(error, result) => {
+			if (error) {
+				console.log(error);
+			} else {
+				res.json({ message: "Product added successfully" });
 			}
 		}
 	);

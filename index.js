@@ -3,11 +3,14 @@ const mysql = require("mysql");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const session = require("express-session");
+const path = require("path");
+const bodyParser = require("body-parser");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use("./frontend/assets", express.static("assets"));
 
 dotenv.config("./.env");
 
@@ -25,6 +28,8 @@ db.connect((error) => {
 		console.log("Connted to mySql");
 	}
 });
+
+path.join(__dirname, "./index.html");
 
 // express session
 app.use(

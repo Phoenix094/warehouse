@@ -1,5 +1,6 @@
 const mysql = require("mysql");
 const bcrypt = require("bcrypt");
+const path = require("path");
 
 const db = mysql.createConnection({
 	host: process.env.HOST,
@@ -48,9 +49,10 @@ exports.login = (req, res) => {
 			if (result.length > 0) {
 				await bcrypt.compare(password, result[0].password, (err, pass) => {
 					if (pass) {
-						return res.status(200).json({
-							message: "login sussessful",
-						});
+						// return res.status(200).json({
+						// 	message: "login sussessful",
+						// });
+						res.redirect("admin.html");
 					} else {
 						return res.json({ error: result });
 					}
@@ -60,4 +62,8 @@ exports.login = (req, res) => {
 			}
 		}
 	);
+};
+
+exports.renderLogin = (req, res) => {
+	res.sendFile(path.join(__dirname, "../index.html"));
 };
