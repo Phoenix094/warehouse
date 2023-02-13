@@ -4,8 +4,6 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const bodyParser = require("body-parser");
 
-const encoded = bodyParser.urlencoded();
-
 const { create, login, renderLogin } = require("../controller/auth");
 const {
 	fetchDispatchList,
