@@ -28,17 +28,34 @@ exports.dispatchListAdd = (req, res) => {
 						} else {
 							let totalQuantity = result[0].quantity;
 							let newQuantity = totalQuantity - quantity;
-							db.query(
-								"UPDATE productlist SET quantity=? WHERE id=?",
-								[newQuantity, upid],
-								(er, result) => {
-									if (er) {
-										console.log(er);
-									} else {
-										res.json({ message: "Product dispatch added" });
+							if (newQuantity == 0) {
+								db.query(
+									"DELETE FROM dispatch_list WHERE id=? ",
+									[upid],
+									(er, result) => {
+										if (er) {
+											res.json({ error: "some error occurd" });
+										} else {
+											res.json({
+												message:
+													"the Product is dispatch and the product is empty",
+											});
+										}
 									}
-								}
-							);
+								);
+							} else {
+								db.query(
+									"UPDATE productlist SET quantity=? WHERE id=?",
+									[newQuantity, upid],
+									(er, result) => {
+										if (er) {
+											console.log(er);
+										} else {
+											res.json({ message: "Product dispatch added" });
+										}
+									}
+								);
+							}
 						}
 					}
 				);
